@@ -174,6 +174,7 @@
     function editTable(e){
       var rowIndex = rows.indexOf(e.parentNode);
       if (rowIndex > 0){
+        var cellIndex = e.cellIndex;
         var rowToChange = rows[rowIndex];
         var cellToChange = rowToChange.cells[e.cellIndex];
         var cellText = cellToChange.innerText;
@@ -188,7 +189,18 @@
           var newData = e.target.value;
           cellToChange.removeChild(input);
           cellToChange.innerText = newData;
+
+          /* Deep clone an original data object, store changes in
+              new object. New object can be posted to the server
+              to persist the changes.
+           */
+          var newObj = Object.assign({}, data);
+          newObj[rowIndex][headerRow[cellIndex]] = newData;
+          console.log('Saved data: ')
+          console.log(newObj[rowIndex]);
         }
+
+
       }
 
       //console.log(e.cellIndex)
@@ -239,7 +251,7 @@
 
 
 
-  /*if (typeof Object.assign != 'function') {
+  if (typeof Object.assign != 'function') {
     Object.assign = function(target, varArgs) { // .length of function is 2
       'use strict';
       if (target == null) { // TypeError if undefined or null
@@ -262,5 +274,5 @@
       }
       return to;
     };
-  }*/
+  }
 })(window)
