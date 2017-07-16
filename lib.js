@@ -16,15 +16,20 @@
       this.perPage = perPage;
 
       var total = Math.ceil(data.length / this.perPage);
+      var headerRow = getHeader(data[0]);
       var table = buildTable(data);
       var rows = getRows(table);
       var sortOrder = -1;
-
       mountTable(table, this.tableRoot);
       buildPagination(table, total);
-      insertSearch().oninput = function (e) {
+      var searchBar = insertSearch();
+      searchBar.oninput = function (e) {
         filterTable(e.target.value, Array.prototype.slice.call(rows, 0));
       };
+      var showHideBtn = insertShowHide(searchBar, data[0]);
+      showHideBtn.onclick = function (e) {
+        showHideColumn(e.target);
+      }
       paginate(1, this.perPage, Array.prototype.slice.call(rows, 0));
 
 
@@ -72,6 +77,25 @@
       var input = document.createElement('input');
       table.parentNode.insertBefore(input, table);
       return input;
+    }
+
+    function insertShowHide(input, data) {
+      var select = document.createElement('select');
+      var btn = document.createElement('button');
+      select.classList.add('lib-select');
+      btn.classList.add('lib-show-btn');
+      var options = Object.keys(data);
+      console.log(options);
+      var optionsHTML = '';
+
+      for (var o in options){
+        optionsHTML+= '<option>' + options[o] + '</option>'
+      }
+      select.innerHTML = optionsHTML;
+      btn.innerText = "Show / Hide";
+      table.parentNode.insertBefore(select, input);
+      table.parentNode.insertBefore(btn, input);
+      return btn;
     }
 
     function changePage(e) {
@@ -134,13 +158,21 @@
       paginate(1, perPage, filtered);
     }
 
+    function showHideColumn() {
+      var select = document.getElementsByClassName('lib-select')[0];
+      var col = select.selectedIndex;
+      var elems = table.querySelectorAll('#col-'+col+', .col-'+col);
+      for (var i=0; i<elems.length; i++){
+       (elems[i].style.display === '')? elems[i].style.display = 'none' : elems[i].style.display = '' ;
+      }
+    }
+
     function buildTable (data) {
       var table = document.createElement('table');
       var thead = document.createElement('thead');
       thead.innerHTML = '<tr></tr>'
       var headerHTML = '';
-      var headerArr = Object.keys(data[0]);
-      headerArr.forEach(function (text, i) {
+      headerRow.forEach(function (text, i) {
         headerHTML += '<th id="col-'+i+'">' + text + '</th>';
       })
       thead.innerHTML = headerHTML;
@@ -151,10 +183,11 @@
       data.forEach(function (elem, index) {
         tbodyHTML += '<tr id="row-'+index+'">';
 
+        var i = 0;
         for(var prop in elem){
-          tbodyHTML += '<td>' + elem[prop] + '</td>'
+          tbodyHTML += '<td class="col-'+i+'">' + elem[prop] + '</td>'
+          i++;
         }
-
         tbodyHTML += '</tr>'
       })
 
@@ -163,6 +196,10 @@
       thead.onclick = sort;
       table.appendChild(tbody);
       return table;
+    }
+
+    function getHeader (data) {
+      return Object.keys(data);
     }
   }
 
