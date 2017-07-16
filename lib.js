@@ -109,8 +109,12 @@
     function filterTable(query, data) {
       query = query.toLowerCase();
       var filtered = data.filter(function (item, index, arr) {
-        if(item.cells[1].innerText.toLowerCase().indexOf(query) > -1){
-          return item;
+        var cells = item.cells;
+
+        for (var i=0; i<cells.length; i++){
+          if(cells[i].innerText.toLowerCase().indexOf(query) > -1){
+            return item;
+          }
         }
       });
       paginate(1, perPage, filtered);
