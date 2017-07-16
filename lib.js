@@ -102,8 +102,11 @@
     }
 
     function changePage(e) {
-      var pageNo = parseInt(e.target.innerText)
-      paginate(pageNo, perPage, Array.prototype.slice.call(rows, 0));
+      var pageNo = parseInt(e.target.innerText);
+      if (pageNo && pageNo !== '' && pageNo < total){
+        paginate(pageNo, perPage, Array.prototype.slice.call(rows, 0));
+      }
+
     }
 
     function updateTableBody (table, elements) {
