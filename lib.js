@@ -45,6 +45,7 @@
 
     function buildPagination (table, total) {
       var div = document.createElement('div');
+      div.classList.add('lib-pagination');
       var paginationHTML = '';
       div.innerHTML = '<ul></ul>';
 
@@ -54,6 +55,17 @@
       div.innerHTML = paginationHTML;
       table.parentNode.insertBefore(div, table.nextSibling)
       div.onclick = changePage;
+    }
+
+    function updatePagination (total) {
+      var container = document.getElementsByClassName('lib-pagination')[0];
+      var HTML = '';
+      container.innerHTML = '<ul></ul>';
+
+      for(var i=1; i<=total; i++){
+        HTML+= '<li>'+i+'</li>';
+      }
+      container.innerHTML = HTML;
     }
 
     function insertSearch() {
@@ -117,6 +129,8 @@
           }
         }
       });
+      var newPages = Math.ceil(filtered.length / perPage)
+      updatePagination(newPages);
       paginate(1, perPage, filtered);
     }
 
