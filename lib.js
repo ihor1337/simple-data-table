@@ -55,12 +55,11 @@
     function buildPagination (table, total) {
       var div = document.createElement('div');
       div.classList.add('lib-pagination');
-      var paginationHTML = '';
-      div.innerHTML = '<ul></ul>';
-
+      var paginationHTML = '<ul>';
       for(var i=1; i<=total; i++){
         paginationHTML+= '<li>'+i+'</li>';
       }
+      paginationHTML += '</ul>'
       div.innerHTML = paginationHTML;
       table.parentNode.insertBefore(div, table.nextSibling)
       div.onclick = changePage;
