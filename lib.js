@@ -5,7 +5,7 @@
 (function (t) {
   "use strict"
 
-  console.log(t)
+  //myTable object with options
   t.myTable = function(table_selector, data, perPage) {
       if (typeof table_selector === "string"){
         this.tableRoot = document.getElementById(table_selector)
@@ -13,43 +13,51 @@
         throw new Error("Argument is of wrong type. Please provide a string id")
       }
 
-      var total = Math.ceil(data.length / perPage);
-      var headerRow = getHeader(data[0]);
-      var table = buildTable(data);
-      var rows = getRows(table);
+      //Private variables
+      var total = Math.ceil(data.length / perPage); //num of pages
+      var headerRow = getHeader(data[0]); // header of the table
+      var table = buildTable(data); // builds table from given JSON data
+      var rows = getRows(table); // extracts rows from table for further manipulation
       var sortOrder = -1;
-      mountTable(table, this.tableRoot);
-      buildPagination(table, total);
-      var searchBar = insertSearch();
+
+      //initialization
+      mountTable(table, this.tableRoot); //mounts table to the dom
+      var pagination = buildPagination(table, total); // builds pagination markup
+      pagination.onclick = changePage;
+      var searchBar = insertSearch(); // insearts search bar and returns it
       searchBar.oninput = function (e) {
-        filterTable(e.target.value, Array.prototype.slice.call(rows, 0));
-      };
-      var showHideBtn = insertShowHide(searchBar, data[0]);
+        filterTable(e.target.value, Array.prototype.slice.call(rows, 0)); //filtering table
+      }; //filtering table whenever input box changes
+
+      var showHideBtn = insertShowHide(searchBar, data[0]); //inserts button to toggle hide/show and returns it
       showHideBtn.onclick = function (e) {
-        showHideColumn(e.target);
+        showHideColumn(e.target); //toggles show/hide of the column
       }
 
       table.onclick = function (e) {
-        editTable(e.target);
+        editTable(e.target); // adds input box and edits clicked cell
       }
-      paginate(1, perPage, Array.prototype.slice.call(rows, 0));
+      paginate(1, perPage, Array.prototype.slice.call(rows, 0)); //paginates the table
 
 
+    //returns rows of the table
     function getRows (table) {
-      var rows = [].slice.call(table.rows);
-      rows.splice(0,1);
+      var rows = [].slice.call(table.rows); //converts dom elements into an array. (Array.from() in es6)
+      rows.splice(0,1); //remove firs row (it is header, we don't need to manipulate it)
       return rows;
     }
 
+    //paginates the array
     function paginate(page, perPage, data) {
       var paginated = [];
       if(page < 0) page = 1;
       var start = (page-1) * perPage;
       var end = page * perPage;
       paginated = data.slice(start, end);
-      updateTableBody(table, paginated);
+      updateTableBody(table, paginated); //updates the table body with paginated results
     }
 
+    //builds pagination markup and returns its container
     function buildPagination (table, total) {
       var div = document.createElement('div');
       div.classList.add('lib-pagination');
@@ -61,9 +69,10 @@
       paginationHTML += '</ul>'
       div.innerHTML = paginationHTML;
       table.parentNode.insertBefore(div, table.nextSibling)
-      div.onclick = changePage;
+      return div;
     }
 
+    //updates pagination if table was refined
     function updatePagination (total) {
       var container = document.getElementsByClassName('lib-pagination')[0];
       var HTML = '<ul>';
@@ -78,6 +87,7 @@
       HTML += '</ul>';
       container.innerHTML = HTML;
     }
+
 
     function insertSearch() {
       var input = document.createElement('input');
@@ -130,15 +140,11 @@
       table.replaceChild(newBody, oldBody)
     }
 
+    //sorts table and paginates the result
     function sort(e) {
       (sortOrder === -1) ? sortOrder = 1 : sortOrder = -1
-      //var data = Array.prototype.slice.call(rows, 0);
-      var col = e.target.id.split('-')[1];
-      console.log(col)
 
-        /*rows.sort(function (a,b) {
-            return (b.cells[0].innerText - a.cells[0].innerText) * sortOrder;
-        })*/
+      var col = e.target.id.split('-')[1];
 
       rows.sort(function (a,b) {
         var A = a.cells[col].innerText;
@@ -154,7 +160,6 @@
         }
         return 0;
       })
-      //updateTableBody(table, data);
       paginate(1, perPage, rows);
     }
 
@@ -183,9 +188,12 @@
       }
     }
 
+    //inserts an input into table cell, removes input and saves data on blur
     function editTable(e){
       var rowIndex = rows.indexOf(e.parentNode);
       if (rowIndex >= 0){
+
+        //save edits in the dom
 
         var cellIndex = e.cellIndex;
         var rowToChange = rows[rowIndex];
@@ -216,10 +224,9 @@
 
 
       }
-
-      //console.log(e.cellIndex)
     }
 
+    //builds table from given JSON
     function buildTable (data) {
       var table = document.createElement('table');
       var thead = document.createElement('thead');
@@ -254,17 +261,15 @@
     function getHeader (data) {
       return Object.keys(data);
     }
+
+    function mountTable (table, root) {
+      root.appendChild(table)
+    }
   }
 
 
 
-
-  function mountTable (table, root) {
-    root.appendChild(table)
-  }
-
-
-
+  //Obect.assign polyfill for browsers that don't support es6
   if (typeof Object.assign != 'function') {
     Object.assign = function(target, varArgs) { // .length of function is 2
       'use strict';

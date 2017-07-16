@@ -56,6 +56,9 @@ table {
 table * {
     position: relative;
 }
+table th{
+    cursor: pointer;
+}
 table td, table th {
     padding-left: 8px;
 }
@@ -107,11 +110,12 @@ div.lib-pagination{
 
 div.lib-pagination ul{
     list-style: none;
+    display: flex;
 
 }
 
 div.lib-pagination ul li{
-    display: inline;
+
     padding: 10px 15px;
     margin-left: 10px;
     background-color: #FFED86;
