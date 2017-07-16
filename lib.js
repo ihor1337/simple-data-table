@@ -13,9 +13,7 @@
         throw new Error("Argument is of wrong type. Please provide a string id")
       }
 
-      this.perPage = perPage;
-
-      var total = Math.ceil(data.length / this.perPage);
+      var total = Math.ceil(data.length / perPage);
       var headerRow = getHeader(data[0]);
       var table = buildTable(data);
       var rows = getRows(table);
@@ -34,7 +32,7 @@
       table.onclick = function (e) {
         editTable(e.target);
       }
-      paginate(1, this.perPage, Array.prototype.slice.call(rows, 0));
+      paginate(1, perPage, Array.prototype.slice.call(rows, 0));
 
 
     function getRows (table) {
@@ -57,7 +55,8 @@
       div.classList.add('lib-pagination');
       var paginationHTML = '<ul>';
       for(var i=1; i<=total; i++){
-        paginationHTML+= '<li>'+i+'</li>';
+        if (i===1) paginationHTML += '<li class="active">'+i+'</li>'
+        else paginationHTML+= '<li>'+i+'</li>';
       }
       paginationHTML += '</ul>'
       div.innerHTML = paginationHTML;
@@ -67,12 +66,16 @@
 
     function updatePagination (total) {
       var container = document.getElementsByClassName('lib-pagination')[0];
-      var HTML = '';
-      container.innerHTML = '<ul></ul>';
+      var HTML = '<ul>';
 
       for(var i=1; i<=total; i++){
-        HTML+= '<li>'+i+'</li>';
+        if(i===1){
+          HTML+= '<li class="active">'+i+'</li>';
+        }else {
+          HTML+= '<li>'+i+'</li>';
+        }
       }
+      HTML += '</ul>';
       container.innerHTML = HTML;
     }
 
@@ -104,7 +107,14 @@
     function changePage(e) {
       var pageNo = parseInt(e.target.innerText);
       if (pageNo && pageNo !== '' && pageNo < total){
+       var li = e.target.parentNode.children;
+       for (var i=0; i<li.length; i++){
+         if(li[i].classList.contains('active')){
+           li[i].classList.remove('active')
+         }
+       }
         paginate(pageNo, perPage, Array.prototype.slice.call(rows, 0));
+        e.target.classList.add('active');
       }
 
     }

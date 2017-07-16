@@ -78,9 +78,9 @@ div.lib-pagination ul li{
     border-radius: 5px;
     cursor: pointer;
     opacity: 1;
-    transition: background-color .3s linear;
+    transition: background-color .2s linear;
 }
 
-div.lib-pagination ul li:hover{
+div.lib-pagination ul li:hover, div.lib-pagination ul li.active{
     background-color: #f9bb3f;
 }
