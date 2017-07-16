@@ -62,7 +62,7 @@ body {
 div.lib-pagination{
     margin-top: 15px;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
 }
 
 div.lib-pagination ul{

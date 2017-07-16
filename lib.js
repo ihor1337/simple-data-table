@@ -106,7 +106,7 @@
 
     function changePage(e) {
       var pageNo = parseInt(e.target.innerText);
-      if (pageNo && pageNo !== '' && pageNo < total){
+      if (pageNo && pageNo !== '' && pageNo <= total){
        var li = e.target.parentNode.children;
        for (var i=0; i<li.length; i++){
          if(li[i].classList.contains('active')){
@@ -185,7 +185,7 @@
 
     function editTable(e){
       var rowIndex = rows.indexOf(e.parentNode);
-      if (rowIndex > 0){
+      if (rowIndex >= 0){
         var cellIndex = e.cellIndex;
         var rowToChange = rows[rowIndex];
         var cellToChange = rowToChange.cells[e.cellIndex];
