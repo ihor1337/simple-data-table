@@ -186,6 +186,7 @@
     function editTable(e){
       var rowIndex = rows.indexOf(e.parentNode);
       if (rowIndex >= 0){
+
         var cellIndex = e.cellIndex;
         var rowToChange = rows[rowIndex];
         var cellToChange = rowToChange.cells[e.cellIndex];
@@ -194,9 +195,10 @@
         while(cellToChange.firstChild){
           cellToChange.removeChild(cellToChange.firstChild)
         }
-        input.autofocus = true;
+
         input.value = cellText;
         cellToChange.appendChild(input);
+        input.focus();
         input.onblur = function (e) {
           var newData = e.target.value;
           cellToChange.removeChild(input);

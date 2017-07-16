@@ -16,8 +16,9 @@
 #table-container table input{
     float:none;
     width: 100%;
-    max-width: 100px;
+    max-width: 200px;
     margin: 0;
+    border: 1px solid #FFED86;
 }
 select.lib-select{
     border-radius: 5px;
