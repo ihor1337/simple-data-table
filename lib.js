@@ -30,6 +30,10 @@
       showHideBtn.onclick = function (e) {
         showHideColumn(e.target);
       }
+
+      table.onclick = function (e) {
+        editTable(e.target);
+      }
       paginate(1, this.perPage, Array.prototype.slice.call(rows, 0));
 
 
@@ -165,6 +169,29 @@
       for (var i=0; i<elems.length; i++){
        (elems[i].style.display === '')? elems[i].style.display = 'none' : elems[i].style.display = '' ;
       }
+    }
+
+    function editTable(e){
+      var rowIndex = rows.indexOf(e.parentNode);
+      if (rowIndex > 0){
+        var rowToChange = rows[rowIndex];
+        var cellToChange = rowToChange.cells[e.cellIndex];
+        var cellText = cellToChange.innerText;
+        var input = document.createElement('input');
+        while(cellToChange.firstChild){
+          cellToChange.removeChild(cellToChange.firstChild)
+        }
+        input.autofocus = true;
+        input.value = cellText;
+        cellToChange.appendChild(input);
+        input.onblur = function (e) {
+          var newData = e.target.value;
+          cellToChange.removeChild(input);
+          cellToChange.innerText = newData;
+        }
+      }
+
+      //console.log(e.cellIndex)
     }
 
     function buildTable (data) {
